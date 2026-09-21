@@ -354,10 +354,10 @@
         const musicIcon = document.getElementById("musicIcon");
         const volumeSlider = document.getElementById("volumeSlider");
 
-        let lastVolume = 0.3;
+        let lastVolume = 0.5;
 
-        // Set initial volume to 30%
-        music.volume = 0.3;
+        // Set initial volume to 50%
+        music.volume = 0.5;
 
         // Updates slider track background fill
         function updateSliderFill() {
@@ -394,7 +394,7 @@
                 volumeSlider.value = 0;
                 music.pause();
             } else {
-                music.volume = lastVolume || 0.3;
+                music.volume = lastVolume || 0.5;
                 volumeSlider.value = music.volume;
                 music.play().catch(() => {});
             }
@@ -438,7 +438,7 @@
                     updateIcon();
 
                     const startOnInteraction = () => {
-                        music.volume = lastVolume || 0.3;
+                        music.volume = lastVolume || 0.5;
                         volumeSlider.value = music.volume;
                         music.play().then(() => {
                             updateSliderFill();
