@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebLinkTree</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Ultra-glassy, highly transparent container card */
+        .container {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            color: white;
+            
+            /* Extremely transparent background with a faint clean border */
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 35px 25px;
+            
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-img {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin: 15px 0 5px;
+            font-weight: 600;
+        }
+
+        .bio {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .link-button {
+            display: flex;
+            align-items: center;
+            background: white;
+            color: #111;
+            padding: 16px 24px;
+            margin: 14px 0;
+            width: 100%;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .link-button:hover {
+            transform: scale(1.02);
+            background-color: #f8f9fa;
+        }
+
+        .link-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .instagram-button-icon {
+            color: #000;
+            font-size: 1.25rem;
+        }
+
+        .nexus-n {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #111;
+        }
+
+        .link-text {
+            flex-grow: 1;
+            text-align: center;
+            padding-right: 30px;
+        }
+
+        .social-row {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 1.6rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+        }
+
+        .social-icon:hover {
+            opacity: 1;
+        }
+
+        .social-icon .nexus-n {
+            color: white;
+        }
+
+        /* =========================
+           MUSIC PLAYER WITH CIRCLE BUTTON
+           ========================= */
+
+        .music-player {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+
+            height: 52px;
+            padding: 0 18px 0 14px;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+            z-index: 9999;
+        }
+
+        #musicButton {
+            width: 34px;
+            height: 34px;
+
+            outline: none;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+
+            transition: transform 0.15s, background-color 0.15s, color 0.15s, border-color 0.15s;
+        }
+
+        #musicButton i {
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        #musicButton:hover {
+            transform: scale(1.08);
+        }
+
+        #volumeSlider {
+            appearance: none;
+            -webkit-appearance: none;
+
+            width: 100px;
+            height: 8px;
+
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+
+            outline: none;
+            cursor: pointer;
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+
+            width: 0px;
+            height: 0px;
+        }
+
+        #volumeSlider::-moz-range-thumb {
+            width: 0px;
+            height: 0px;
+            border: none;
+        }
+
+        /* =========================
+           MOBILE
+           ========================= */
+
+        @media (max-width: 600px) {
+            .music-player {
+                top: 15px;
+                left: 15px;
+            }
+
+            #volumeSlider {
+                width: 80px;
+            }
+
+            body {
+                padding: 20px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         BACKGROUND MUSIC
+         ========================= -->
+
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="assets/music/montagemeclipse.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- =========================
+         MUSIC CONTROL
+         ========================= -->
+
+    <div class="music-player">
+        <button id="musicButton" aria-label="Mute or unmute music">
+            <i id="musicIcon" class="fa-solid fa-volume-xmark"></i>
+        </button>
+
+        <input
+            type="range"
+            id="volumeSlider"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+            aria-label="Volume"
+        >
+    </div>
+
+    <!-- =========================
+         WEBSITE
+         ========================= -->
+
+    <div class="container">
+        <img src="n1mxvault.png" alt="Avatar" class="profile-img">
+
+        <h1>N1mxVault</h1>
+
+        <p class="bio">
+            19 Years Old, A Developer, Gamer, Editor And Modder, I Like To Learn Skills
+        </p>
+
+        <a href="https://www.youtube.com/@N1mxVault" class="link-button" target="_blank">
+            <span class="link-icon">
+                <i class="fa-brands fa-youtube"></i>
+            </span>
+            <span class="link-text">
+                Youtube Channel
+            </span>
+        </a>
+
+        <a href="https://discord.com/invite/qNPgPGtpZK" class="link-button" target="_blank">
+            <span class="link-icon">
+                <i class="fa-brands fa-discord"></i>
+            </span>
+            <span class="link-text">
+                Discord Server
+            </span>
+        </a>
+
+        <a href="https://www.instagram.com/n1mxvault" class="link-button" target="_blank">
+            <span class="link-icon">
+                <i class="fa-brands fa-instagram instagram-button-icon"></i>
+            </span>
+            <span class="link-text">
+                Instagram Profile
+            </span>
+        </a>
+
+        <a href="https://www.nexusmods.com/profile/N1mxVault" class="link-button" target="_blank">
+            <span class="link-icon">
+                <span class="nexus-n">
+                    N
+                </span>
+            </span>
+            <span class="link-text">
+                Nexus Mods
+            </span>
+        </a>
+
+        <div class="social-row">
+            <a href="https://www.youtube.com/@N1mxVault" class="social-icon" target="_blank">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+
+            <a href="https://discord.com/invite/qNPgPGtpZK" class="social-icon" target="_blank">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+
+            <a href="https://www.instagram.com/n1mxvault" class="social-icon" target="_blank">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="https://www.nexusmods.com/profile/N1mxVault" class="social-icon" target="_blank">
+                <span class="nexus-n">
+                    N
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <!-- =========================
+         MUSIC JAVASCRIPT
+         ========================= -->
+
+    <script>
+        const music = document.getElementById("backgroundMusic");
+        const musicButton = document.getElementById("musicButton");
+        const musicIcon = document.getElementById("musicIcon");
+        const volumeSlider = document.getElementById("volumeSlider");
+
+        let lastVolume = 0.3;
+
+        // Set initial volume to 30%
+        music.volume = 0.3;
+
+        // Updates slider track background fill
+        function updateSliderFill() {
+            const val = volumeSlider.value;
+            const percentage = val * 100;
+            
+            if (val == 0) {
+                volumeSlider.style.background = "rgba(255, 255, 255, 0.25)";
+            } else {
+                volumeSlider.style.background = `linear-gradient(to right, #ffffff ${percentage}%, rgba(255, 255, 255, 0.25) ${percentage}%)`;
+            }
+        }
+
+        // Updates circle button and speaker icon state
+        function updateIcon() {
+            if (music.paused || music.volume === 0) {
+                musicButton.style.background = "#737373";
+                musicButton.style.border = "3px solid #ffffff";
+                musicButton.style.color = "#ffffff";
+                musicIcon.className = "fa-solid fa-volume-xmark";
+            } else {
+                musicButton.style.background = "#ffffff";
+                musicButton.style.border = "3px solid #737373";
+                musicButton.style.color = "#666666";
+                musicIcon.className = "fa-solid fa-volume-high";
+            }
+        }
+
+        // Direct Pause / Resume Button Logic
+        musicButton.addEventListener("click", function () {
+            if (!music.paused && music.volume > 0) {
+                lastVolume = music.volume;
+                music.volume = 0;
+                volumeSlider.value = 0;
+                music.pause();
+            } else {
+                music.volume = lastVolume || 0.3;
+                volumeSlider.value = music.volume;
+                music.play().catch(() => {});
+            }
+            updateSliderFill();
+            updateIcon();
+        });
+
+        // Volume Drag Control
+        volumeSlider.addEventListener("input", function () {
+            const val = Number(this.value);
+            music.volume = val;
+
+            if (val > 0) {
+                lastVolume = val;
+                if (music.paused) {
+                    music.play().catch(() => {});
+                }
+            } else {
+                music.pause();
+            }
+
+            updateSliderFill();
+            updateIcon();
+        });
+
+        // Autoplay handler
+        function tryPlayAudio() {
+            music.volume = Number(volumeSlider.value);
+
+            const playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    updateSliderFill();
+                    updateIcon();
+                }).catch(() => {
+                    music.pause();
+                    music.volume = 0;
+                    volumeSlider.value = 0;
+                    updateSliderFill();
+                    updateIcon();
+
+                    const startOnInteraction = () => {
+                        music.volume = lastVolume || 0.3;
+                        volumeSlider.value = music.volume;
+                        music.play().then(() => {
+                            updateSliderFill();
+                            updateIcon();
+                        }).catch(() => {});
+
+                        window.removeEventListener("click", startOnInteraction);
+                        window.removeEventListener("touchstart", startOnInteraction);
+                        window.removeEventListener("keydown", startOnInteraction);
+                    };
+
+                    window.addEventListener("click", startOnInteraction);
+                    window.addEventListener("touchstart", startOnInteraction);
+                    window.addEventListener("keydown", startOnInteraction);
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", tryPlayAudio);
+        window.addEventListener("load", tryPlayAudio);
+    </script>
+</body>
+</html>
