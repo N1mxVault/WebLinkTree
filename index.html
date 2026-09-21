@@ -88,12 +88,14 @@
             background-color: #f8f9fa;
         }
 
+        /* Fixed-width icon slot to make all icons perfectly level and aligned */
         .link-icon {
             font-size: 1.2rem;
-            width: 30px;
-            text-align: left;
+            width: 35px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .instagram-button-icon {
@@ -105,12 +107,13 @@
             font-size: 1.3rem;
             font-weight: 800;
             color: #111;
+            line-height: 1;
         }
 
         .link-text {
             flex-grow: 1;
             text-align: center;
-            padding-right: 30px;
+            padding-right: 35px; /* Balances out the left icon slot so text remains dead-center */
         }
 
         .social-row {
@@ -139,8 +142,8 @@
         }
 
         /* =========================
-           MUSIC PLAYER WITH CIRCLE BUTTON
-           ========================= */
+            MUSIC PLAYER WITH CIRCLE BUTTON
+            ========================= */
 
         .music-player {
             position: fixed;
@@ -222,8 +225,8 @@
         }
 
         /* =========================
-           MOBILE
-           ========================= */
+            MOBILE
+            ========================= */
 
         @media (max-width: 600px) {
             .music-player {
