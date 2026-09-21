@@ -307,7 +307,7 @@
     <!-- Visitor Counter (Bottom Left Screen) -->
     <div class="visitor-counter">
         <i class="fa-solid fa-eye"></i>
-        <span id="viewCount">0</span>
+        <span id="viewCount">...</span>
     </div>
 
     <!-- Main Card Container -->
@@ -380,15 +380,16 @@
     </div>
 
     <script>
-        // --- Live Visitor Counter (Fresh Reset to start counting clean from 1 on next load) ---
-        localStorage.removeItem("pageViews");
-        let views = localStorage.getItem("pageViews");
-        if (!views) {
-            views = 0;
-        }
-        views = Number(views) + 1;
-        localStorage.setItem("pageViews", views);
-        document.getElementById("viewCount").innerText = views;
+        // --- Live 24/7 Global Visitor Counter ---
+        fetch("https://countapi.mileshilliard.com/api/v1/hit/n1mxvault_visits_2026")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("viewCount").innerText = data.value;
+            })
+            .catch(error => {
+                console.error("Error fetching visitor count:", error);
+                document.getElementById("viewCount").innerText = "1";
+            });
 
         // --- Music Player Logic ---
         const music = document.getElementById("backgroundMusic");
