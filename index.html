@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebLinkTree</title>
 
+    <!-- Website Browser Tab Favicon (Round Profile Icon) -->
+    <link rel="icon" type="image/png" href="n1mxvault.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
@@ -377,7 +380,8 @@
     </div>
 
     <script>
-        // --- Live Visitor Counter (Increments every time the page is opened/reloaded, starting from 0) ---
+        // --- Live Visitor Counter (Fresh Reset to start counting clean from 1 on next load) ---
+        localStorage.removeItem("pageViews");
         let views = localStorage.getItem("pageViews");
         if (!views) {
             views = 0;
