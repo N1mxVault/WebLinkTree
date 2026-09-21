@@ -34,7 +34,6 @@
             text-align: center;
             color: white;
             
-            /* Extremely transparent background with a faint clean border */
             background: rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 28px;
@@ -54,7 +53,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* Clean, crisp name styling matching your reference */
         h1 {
             font-size: 1.5rem;
             margin: 15px 0 6px;
@@ -92,7 +90,6 @@
             background-color: #f8f9fa;
         }
 
-        /* Fixed-width icon slot to make all icons perfectly level and aligned */
         .link-icon {
             font-size: 1.2rem;
             width: 35px;
@@ -117,7 +114,7 @@
         .link-text {
             flex-grow: 1;
             text-align: center;
-            padding-right: 35px; /* Balances out the left icon slot so text remains dead-center */
+            padding-right: 35px;
         }
 
         .social-row {
@@ -146,7 +143,7 @@
         }
 
         /* =========================
-            MUSIC PLAYER WITH CIRCLE BUTTON
+            MUSIC PLAYER (TOP LEFT)
             ========================= */
 
         .music-player {
@@ -167,27 +164,21 @@
 
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
             z-index: 9999;
         }
 
         #musicButton {
             width: 34px;
             height: 34px;
-
             outline: none;
             border-radius: 50%;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             cursor: pointer;
             padding: 0;
             line-height: 1;
-
             transition: transform 0.15s, background-color 0.15s, color 0.15s, border-color 0.15s;
         }
 
@@ -203,13 +194,10 @@
         #volumeSlider {
             appearance: none;
             -webkit-appearance: none;
-
             width: 100px;
             height: 8px;
-
             background: rgba(255, 255, 255, 0.25);
             border-radius: 20px;
-
             outline: none;
             cursor: pointer;
         }
@@ -217,7 +205,6 @@
         #volumeSlider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-
             width: 0px;
             height: 0px;
         }
@@ -229,6 +216,41 @@
         }
 
         /* =========================
+            VISITOR COUNTER (BOTTOM LEFT SCREEN)
+            ========================= */
+
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+
+            height: 44px;
+            padding: 0 16px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 9999;
+        }
+
+        .visitor-counter i {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        /* =========================
             MOBILE
             ========================= */
 
@@ -236,6 +258,13 @@
             .music-player {
                 top: 15px;
                 left: 15px;
+            }
+
+            .visitor-counter {
+                bottom: 15px;
+                left: 15px;
+                height: 40px;
+                padding: 0 14px;
             }
 
             #volumeSlider {
@@ -251,18 +280,11 @@
 
 <body>
 
-    <!-- =========================
-         BACKGROUND MUSIC
-         ========================= -->
-
     <audio id="backgroundMusic" loop preload="auto">
         <source src="assets/music/montagemeclipse.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- =========================
-         MUSIC CONTROL
-         ========================= -->
-
+    <!-- Music Player (Top Left) -->
     <div class="music-player">
         <button id="musicButton" aria-label="Mute or unmute music">
             <i id="musicIcon" class="fa-solid fa-volume-xmark"></i>
@@ -279,10 +301,13 @@
         >
     </div>
 
-    <!-- =========================
-         WEBSITE
-         ========================= -->
+    <!-- Visitor Counter (Bottom Left Screen) -->
+    <div class="visitor-counter">
+        <i class="fa-solid fa-eye"></i>
+        <span id="viewCount">0</span>
+    </div>
 
+    <!-- Main Card Container -->
     <div class="container">
         <img src="n1mxvault.png" alt="Avatar" class="profile-img">
 
@@ -351,22 +376,25 @@
         </div>
     </div>
 
-    <!-- =========================
-         MUSIC JAVASCRIPT
-         ========================= -->
-
     <script>
+        // --- Live Visitor Counter (Increments every time the page is opened/reloaded, starting from 0) ---
+        let views = localStorage.getItem("pageViews");
+        if (!views) {
+            views = 0;
+        }
+        views = Number(views) + 1;
+        localStorage.setItem("pageViews", views);
+        document.getElementById("viewCount").innerText = views;
+
+        // --- Music Player Logic ---
         const music = document.getElementById("backgroundMusic");
         const musicButton = document.getElementById("musicButton");
         const musicIcon = document.getElementById("musicIcon");
         const volumeSlider = document.getElementById("volumeSlider");
 
         let lastVolume = 0.5;
-
-        // Set initial volume to 50%
         music.volume = 0.5;
 
-        // Updates slider track background fill
         function updateSliderFill() {
             const val = volumeSlider.value;
             const percentage = val * 100;
@@ -378,7 +406,6 @@
             }
         }
 
-        // Updates circle button and speaker icon state
         function updateIcon() {
             if (music.paused || music.volume === 0) {
                 musicButton.style.background = "#737373";
@@ -393,7 +420,6 @@
             }
         }
 
-        // Direct Pause / Resume Button Logic
         musicButton.addEventListener("click", function () {
             if (!music.paused && music.volume > 0) {
                 lastVolume = music.volume;
@@ -409,7 +435,6 @@
             updateIcon();
         });
 
-        // Volume Drag Control
         volumeSlider.addEventListener("input", function () {
             const val = Number(this.value);
             music.volume = val;
@@ -427,10 +452,8 @@
             updateIcon();
         });
 
-        // Autoplay handler
         function tryPlayAudio() {
             music.volume = Number(volumeSlider.value);
-
             const playPromise = music.play();
 
             if (playPromise !== undefined) {
